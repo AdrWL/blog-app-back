@@ -1,6 +1,6 @@
-import * as express from "express";
+import express from 'express';
 import {json} from "express";
-import * as cors from 'cors';
+import cors from 'cors';
 import "express-async-errors"
 import {handleError, ValidationError} from "./utils/errors";
 import rateLimit from 'express-rate-limit';
