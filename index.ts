@@ -1,5 +1,6 @@
-import express, {json} from "express";
-import cors from 'cors';
+import * as express from "express";
+import {json} from "express";
+import * as cors from 'cors';
 import "express-async-errors"
 import {handleError, ValidationError} from "./utils/errors";
 import rateLimit from 'express-rate-limit';
@@ -9,6 +10,7 @@ const app = express();
 app.use(cors({
     origin: 'https://localhost:3000'
 }));
+
 app.use(json());
 const limiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
