@@ -7,7 +7,7 @@ import {v4 as uuid} from 'uuid';
 type AdRecordResults = [NewArticleAdEntity[], FieldPacket[]];
 
 export class AdRecord implements NewArticleAdEntity {
-    public id: string;
+    public id?: string;
     public title: string;
     public description: string;
     public markdown: string;
@@ -23,7 +23,8 @@ export class AdRecord implements NewArticleAdEntity {
         this.markdown = obj.markdown;
         this.createdAt = obj.createdAt;
     }
-    static async getOne(id: string): Promise<AdRecord | null> {
+
+    static async getOneArticle(id: string): Promise<AdRecord | null> {
         const [results] = await pool.execute("SELECT * FROM `blog` WHERE `id` = :id", {
             id,
         }) as AdRecordResults;
@@ -31,12 +32,23 @@ export class AdRecord implements NewArticleAdEntity {
         return results.length === 0 ? null : new AdRecord(results[0]);
     }
 
-    async insert(): Promise<void> {
+    async insertArticle(): Promise<string> {
         if (!this.id) {
             this.id = uuid();
         } else {
             throw new Error('Cannot insert something that is already inserted!');
         }
         await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `markdown`, `createdAt`) VALUES(:id, :title, :description, :markdown, :createdAt)", this);
+
+        return this.id;
+    };
+
+    static async listAllArticle(): Promise<NewArticleAdEntity[]> {
+        const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` ASC")) as AdRecordResults;
+        return results.map(obj => new AdRecord(obj));
+    }
+
+    async updateArticle(): Promise<void> {
+        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`, `markdown`) VALUES(:id, :title, :description, :markdown)", this);
     }
 }

@@ -3,7 +3,6 @@ export interface NewAdEntity extends Omit<NewArticleAdEntity, 'id'> {
 }
 
 export interface NewArticleAdEntity{
-    id: string;
     title: string;
     description: string;
     markdown: string;
