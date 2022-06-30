@@ -10,7 +10,6 @@ export class AdRecord implements NewArticleAdEntity {
     public id?: string;
     public title: string;
     public description: string;
-    public markdown: string;
     public createdAt: Date;
 
     constructor(obj: NewAdEntity) {
@@ -20,7 +19,6 @@ export class AdRecord implements NewArticleAdEntity {
         this.id = obj.id;
         this.title = obj.title;
         this.description = obj.description;
-        this.markdown = obj.markdown;
         this.createdAt = obj.createdAt;
     }
 
@@ -38,7 +36,7 @@ export class AdRecord implements NewArticleAdEntity {
         } else {
             throw new Error('Cannot insert something that is already inserted!');
         }
-        await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `markdown`, `createdAt`) VALUES(:id, :title, :description, :markdown, :createdAt)", this);
+        await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `createdAt`) VALUES(:id, :title, :description, :createdAt)", this);
 
         return this.id;
     };
@@ -49,6 +47,6 @@ export class AdRecord implements NewArticleAdEntity {
     }
 
     async updateArticle(): Promise<void> {
-        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`, `markdown`) VALUES(:id, :title, :description, :markdown)", this);
+        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`, `user_name`) VALUES(:id, :title, :description, :user_name)", this);
     }
 }
