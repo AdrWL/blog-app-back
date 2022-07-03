@@ -1,14 +1,15 @@
 import express from 'express';
-import {json} from "express";
 import cors from 'cors';
+import {json} from "express";
 import "express-async-errors"
 import {handleError, ValidationError} from "./utils/errors";
 import rateLimit from 'express-rate-limit';
+import { adRouter } from './routers/ad.router';
 
 const app = express();
 
 app.use(cors({
-    origin: 'https://localhost:3000'
+    origin: 'http://localhost:3000'
 }));
 
 app.use(json());
@@ -21,6 +22,7 @@ app.use(limiter)
 app.get('/', async (req, res) => {
     throw new ValidationError("Damn!")
 });
+app.use('/api', adRouter);
 
 app.use(handleError)
 

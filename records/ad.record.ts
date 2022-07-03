@@ -10,12 +10,12 @@ export class AdRecord implements NewArticleAdEntity {
     public id?: string;
     public title: string;
     public description: string;
-    public createdAt: Date;
+    public createdAt?: Date | null | undefined | number | string;
 
     constructor(obj: NewAdEntity) {
-        if (!obj.title || obj.title.length > 100) {
-            throw new ValidationError('Nazwa postu nie może być pusta, ani przekraczać 100 znaków.');
-        }
+        // if (!obj.title || obj.title.length > 100) {
+        //     throw new ValidationError('Nazwa postu nie może być pusta, ani przekraczać 100 znaków.');
+        // }
         this.id = obj.id;
         this.title = obj.title;
         this.description = obj.description;
@@ -30,16 +30,20 @@ export class AdRecord implements NewArticleAdEntity {
         return results.length === 0 ? null : new AdRecord(results[0]);
     }
 
-    async insertArticle(): Promise<string> {
+    async insertArticle(): Promise<any> {
         if (!this.id) {
             this.id = uuid();
-        } else {
-            throw new Error('Cannot insert something that is already inserted!');
-        }
-        await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `createdAt`) VALUES(:id, :title, :description, :createdAt)", this);
+            if (!this.createdAt) {
+                this.createdAt = new Date().toISOString().slice(0, 10)
+            } else {
+                throw new Error('Cannot insert something that is already inserted!');
+            }
+            await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `createdAt`) VALUES(:id, :title, :description, createdAt)", this);
 
-        return this.id;
-    };
+            return [this.id, this.createdAt];
+        }
+    }
+    ;
 
     static async listAllArticle(): Promise<NewArticleAdEntity[]> {
         const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` ASC")) as AdRecordResults;
@@ -47,6 +51,6 @@ export class AdRecord implements NewArticleAdEntity {
     }
 
     async updateArticle(): Promise<void> {
-        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`, `user_name`) VALUES(:id, :title, :description, :user_name)", this);
+        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`) VALUES(:id, :title, :description, : createdAt)", this);
     }
 }
