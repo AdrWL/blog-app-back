@@ -16,20 +16,20 @@ export class AdRecord implements NewArticleAdEntity {
         if (!obj.title || obj.title.length > 100) {
             throw new ValidationError('Nazwa postu nie może być pusta, ani przekraczać 100 znaków.');
         }
+        if (!obj.description || obj.description.length < 0) {
+            throw new ValidationError('Opis postu nie może być pusty.');
+        }
         this.id = obj.id;
         this.title = obj.title;
         this.description = obj.description;
         this.createdAt = obj.createdAt;
     }
-
     static async getOneArticle(id: string): Promise<AdRecord | null> {
         const [results] = await pool.execute("SELECT * FROM `blog` WHERE `id` = :id", {
             id,
         }) as AdRecordResults;
-
         return results.length === 0 ? null : new AdRecord(results[0]);
     }
-
     async insertArticle(): Promise<any> {
         if (!this.id) {
             this.id = uuid();
@@ -43,11 +43,6 @@ export class AdRecord implements NewArticleAdEntity {
     static async listAllArticle(): Promise<NewArticleAdEntity[]> {
         const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` ASC")) as AdRecordResults;
         return results.map(obj => new AdRecord(obj));
-    }
-
-    async updateArticle(title: NewAdEntity, id: NewAdEntity): Promise<void> {
-        await pool.execute("UPDATE `blog` SET `title` = ? WHERE id = ?",
-            [title, id],);
     }
     async delete(): Promise<void> {
         await pool.execute("DELETE FROM `blog` WHERE `id` = :id", {

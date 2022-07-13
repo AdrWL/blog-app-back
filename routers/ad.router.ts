@@ -15,7 +15,6 @@ export const adRouter = Router()
 
     .get('/edit/:id', async (req, res) => {
         const post = await AdRecord.getOneArticle(req.params.id);
-
         res.json(post);
     })
 
@@ -40,7 +39,6 @@ export const adRouter = Router()
             throw new ValidationError('No find post.');
         }
         await post.delete();
-
-        res.end();
+        res.end('Delete successfully');
     })
 
