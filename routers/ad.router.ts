@@ -31,6 +31,7 @@ export const adRouter = Router()
             "UPDATE `blog` SET `description` = ? WHERE id = ?",
             [title, id],
         );
+        res.end('Update successfully');
     })
 
     .delete('/:id', async (req, res) => {
