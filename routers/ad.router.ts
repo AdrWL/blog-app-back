@@ -1,6 +1,8 @@
 import {Router} from "express";
 import {AdRecord} from "../records/ad.record";
 import {NewAdEntity} from "../types";
+import {ValidationError} from "../utils/errors";
+import {pool} from "../utils/db";
 
 export const adRouter = Router()
 
@@ -12,7 +14,9 @@ export const adRouter = Router()
     })
 
     .get('/edit/:id', async (req, res) => {
+        const post = await AdRecord.getOneArticle(req.params.id);
 
+        res.json(post);
     })
 
     .post('/create', async (req, res, next) => {
@@ -21,11 +25,22 @@ export const adRouter = Router()
         res.json(newPost);
     })
 
-    .put('/:id', async (req, res, next) => {
-
+    .put("/", async (req, res) => {
+        const id = req.body.id;
+        const title = req.body.description;
+        await pool.query(
+            "UPDATE `blog` SET `description` = ? WHERE id = ?",
+            [title, id],
+        );
     })
 
     .delete('/:id', async (req, res) => {
+        const post = await AdRecord.getOneArticle(req.params.id);
+        if (!post) {
+            throw new ValidationError('No find post.');
+        }
+        await post.delete();
 
+        res.end();
     })
 

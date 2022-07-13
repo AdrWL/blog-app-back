@@ -7,15 +7,15 @@ import {v4 as uuid} from 'uuid';
 type AdRecordResults = [NewArticleAdEntity[], FieldPacket[]];
 
 export class AdRecord implements NewArticleAdEntity {
-    public id?: string;
+    public id?: string | undefined;
     public title: string;
     public description: string;
-    public createdAt?: Date | null | undefined | number | string;
+    public createdAt?: Date | number | string;
 
     constructor(obj: NewAdEntity) {
-        // if (!obj.title || obj.title.length > 100) {
-        //     throw new ValidationError('Nazwa postu nie może być pusta, ani przekraczać 100 znaków.');
-        // }
+        if (!obj.title || obj.title.length > 100) {
+            throw new ValidationError('Nazwa postu nie może być pusta, ani przekraczać 100 znaków.');
+        }
         this.id = obj.id;
         this.title = obj.title;
         this.description = obj.description;
@@ -35,22 +35,23 @@ export class AdRecord implements NewArticleAdEntity {
             this.id = uuid();
             if (!this.createdAt) {
                 this.createdAt = new Date().toISOString().slice(0, 10)
-            } else {
-                throw new Error('Cannot insert something that is already inserted!');
             }
-            await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `createdAt`) VALUES(:id, :title, :description, createdAt)", this);
-
+            await pool.execute("INSERT INTO `blog`(`id`, `title`, `description`, `createdAt`) VALUES(:id, :title, :description, :createdAt)", this);
             return [this.id, this.createdAt];
         }
-    }
-    ;
-
+    };
     static async listAllArticle(): Promise<NewArticleAdEntity[]> {
         const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` ASC")) as AdRecordResults;
         return results.map(obj => new AdRecord(obj));
     }
 
-    async updateArticle(): Promise<void> {
-        await pool.execute("UPDATE `blog` SET `blog`(`id`, `title`, `description`) VALUES(:id, :title, :description, : createdAt)", this);
+    async updateArticle(title: NewAdEntity, id: NewAdEntity): Promise<void> {
+        await pool.execute("UPDATE `blog` SET `title` = ? WHERE id = ?",
+            [title, id],);
+    }
+    async delete(): Promise<void> {
+        await pool.execute("DELETE FROM `blog` WHERE `id` = :id", {
+            id: this.id,
+        });
     }
 }
