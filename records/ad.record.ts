@@ -41,7 +41,7 @@ export class AdRecord implements NewArticleAdEntity {
         }
     };
     static async listAllArticle(): Promise<NewArticleAdEntity[]> {
-        const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` ASC")) as AdRecordResults;
+        const [results] = (await pool.execute("SELECT * FROM `blog` ORDER BY `createdAt` DESC")) as AdRecordResults;
         return results.map(obj => new AdRecord(obj));
     }
     async delete(): Promise<void> {
