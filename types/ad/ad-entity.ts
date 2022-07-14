@@ -1,5 +1,5 @@
 export interface NewAdEntity extends Omit<NewArticleAdEntity, 'createdAt'|'id'> {
-    id?: string | undefined;
+    id?: string;
     createdAt?: Date | number | string;
 }
 

@@ -7,7 +7,7 @@ import {v4 as uuid} from 'uuid';
 type AdRecordResults = [NewArticleAdEntity[], FieldPacket[]];
 
 export class AdRecord implements NewArticleAdEntity {
-    public id?: string | undefined;
+    public id?: string;
     public title: string;
     public description: string;
     public createdAt?: Date | number | string;

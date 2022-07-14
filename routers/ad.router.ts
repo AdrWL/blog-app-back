@@ -42,4 +42,3 @@ export const adRouter = Router()
         await post.delete();
         res.end('Delete successfully');
     })
-
