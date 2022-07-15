@@ -6,3 +6,7 @@ Working page in [Blog App](https://mega.blog.networkmanager.pl/)
 
 ![carbon (2)](https://user-images.githubusercontent.com/105071559/179193001-439d9968-96e3-45cb-a042-40f9e38289c8.png)
 
+Structure of database
+
+![carbon (3)](https://user-images.githubusercontent.com/105071559/179196264-39f7335b-c164-4997-8bcd-48117c6a9a6d.png)
+
